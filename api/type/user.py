@@ -1,8 +1,12 @@
 import typing
 import strawberry
 from api.connection.db import connection
-from api.models.index import users
 from strawberry.types import Info
+from api.connection.db import engine, meta
+from api.models.user import users
+
+
+meta.create_all(engine)
 
 
 @strawberry.type
@@ -53,3 +57,6 @@ class Mutation:
     def delete_user(self, id: int) -> bool:
         result = connection.execute(users.delete().where(users.c.id == id))
         return result.rowcount > 0
+
+
+
