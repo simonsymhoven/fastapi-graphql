@@ -1,4 +1,6 @@
-from sqlalchemy import create_engine, MetaData
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, declarative_base
+
 from api.core.config import settings
 
 
@@ -10,8 +12,13 @@ def get_url():
     return f"postgresql://{user}:{password}@{server}/{db}"
 
 
-SQLALCHEMY_DATABASE_URL = get_url()
+engine = create_engine(
+    get_url(),
+    future=True,
+    echo=True
+)
 
-engine = create_engine(SQLALCHEMY_DATABASE_URL, echo=True)
-meta = MetaData()
+Base = declarative_base()
+Base.metadata.create_all(engine)
+
 connection = engine.connect()
